@@ -67,6 +67,10 @@ import GeometryTypes: gjk0, ⊖, support_vector_max
         @test support_vector_max(r, Vec(1., 1.)) == (Vec(0.5,1.), 1.5)
         @test support_vector_max(FlexibleConvexHull(r), Vec(1., 1.)) == (Vec(0.5,1.), 1.5)
 
+        sph = HyperSphere(Point(0.,0.,1.), 0.5) 
+        @test support_vector_max(sph, Vec(0.,0.,0.)) == (Vec(0.,0.,0.5), 0.)
+        @test support_vector_max(sph, Vec(0.,0.,1.)) == (Vec(0.,0.,1.5), 1.5)
+
         c1 = Simplex(Vec(1.,1.), Vec(1., 2.))
         c3 = Simplex(Vec(0., 1.), Vec(2.,2.))
         md = c1 ⊖ c3

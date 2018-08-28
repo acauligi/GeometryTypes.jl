@@ -75,6 +75,7 @@ any_inside(c::AbstractConvexHull) = first(vertices(c))
 any_inside(m::MinkowskiDifference) = any_inside(m.c1) - any_inside(m.c2)
 any_inside(c::Union{HyperCube, HyperRectangle}) = origin(c)
 any_inside(v::Vec) = v
+any_inside(s::HyperSphere) = s.center
 
 support_vector_max(ch::AbstractConvexHull, v) = argmax(x-> x⋅v, vertices(ch))
 support_vector_max(w::Vec, v) = w, w⋅v
@@ -86,6 +87,13 @@ function support_vector_max(c::HyperRectangle, v)
     return best_pt, score
 end
 support_vector_max(c::HyperCube) = support_vector_max(HyperRectangle(c))
+function support_vector_max(s::HyperSphere,v)
+    diff = v-s.center
+    diff = isapprox(norm(diff),0.) ? normalize(v) : normalize(diff)
+    best_pt::typeof(v) = s.center + s.r*diff
+    score = (best_pt ⋅ v)
+    return best_pt, score 
+end
 
 function support_vector_max(m::MinkowskiDifference, v)
     v1, score1 =  support_vector_max(m.c1, v)
